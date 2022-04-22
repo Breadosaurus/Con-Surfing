@@ -1,13 +1,10 @@
-// somethong
-
-
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
     }
 
     preload() {
-        this.load.image('crowd', './assets/temp_crowd.png');
+        this.load.image('crowd', './assets/crowd.png');
         this.load.image('player', './assets/player.png');
     }
 
@@ -15,7 +12,7 @@ class Play extends Phaser.Scene {
         // place crowd background 
         this.crowd = this.add.tileSprite(0, 0, 650, 825, 'crowd').setOrigin(0, 0);
 
-        /*
+        /* test border and text. commenting this out for now ~
         this.add.text(20,20, "ConSurfing Play"); 
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0x4E4E4E).setOrigin(0, 0);
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x4E4E4E).setOrigin(0, 0);
