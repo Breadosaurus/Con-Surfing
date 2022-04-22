@@ -9,7 +9,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.rightKey = rightKey;
         this.upKey = upKey;
         this.isHit = false;
-        this.moveSpeed = 8;
+        this.moveSpeed = 20;
 
     } // end constructor
 

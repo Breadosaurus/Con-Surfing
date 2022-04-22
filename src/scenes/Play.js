@@ -1,3 +1,6 @@
+// somethong
+
+
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
@@ -22,7 +25,7 @@ class Play extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         
         // add raccoon
-        this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP).setOrigin(0.5, .5);
+        this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP).setOrigin(0.5, .9);
 
         // GAME OVER flag
         this.gameOver = false;
