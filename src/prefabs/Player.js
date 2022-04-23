@@ -20,7 +20,7 @@ class Player extends Phaser.GameObjects.Sprite {
                 this.x -= this.moveSpeed;
             } else if (this.rightKey.isDown && this.x <= game.config.width - borderUISize - this.width/2) {
                 this.x += this.moveSpeed;
-            } else if (this.upKey.isDown && this.y >= borderUISize * 2 + borderPadding) {
+            } else if (this.upKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
                 this.y -= this.moveSpeed;
             }
         }
@@ -34,6 +34,11 @@ class Player extends Phaser.GameObjects.Sprite {
         // if(this.isHit && this.y >= borderUISize * 3 + borderPadding) {
         //     this.y -= this.moveSpeed;
         // }
+
+        // if(this.y >= game.config.height * 1.05) {
+
+        // }
+
 
         // // reset on miss
         // if(this.y <= borderUISize * 3 + borderPadding) {

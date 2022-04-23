@@ -33,20 +33,32 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
+        // this.deathTimer = this.time.delayedCall(game.settings.gameTimer, () => {
+        //     this.add.image(0, 0, 'end').setOrigin(0, 0);
+        //     this.gameOver = true;
+        // }, null, this);
+
     }
 
     
     update() {  
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
-            // this.ship01.update();       // update & move spaceships (x3)
-            // this.ship02.update();
-            // this.ship03.update();
-        } 
+            // this.enemies.update(); 
+            //this.platform.update();
+        }
 
         // scroll crowd background
         this.crowd.tilePositionY -= scrollSpeed;
-    }
+        // scroll player
+        this.player.y += scrollSpeed;
+
+        if(this.player.y >= game.config.height * 2) {
+            this.gameOver = true;
+            this.crowd.tilePositionY = 0;
+        }
+
+    }// end update()
 
 
 } // end Play scene
