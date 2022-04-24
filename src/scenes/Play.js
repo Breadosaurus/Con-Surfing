@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image('crowd', './assets/crowd.png');
         this.load.image('player', './assets/player.png');
+        this.load.image('tall', './assets/tall.png');
     }
 
     create() {
@@ -30,6 +31,12 @@ class Play extends Phaser.Scene {
         // add raccoon
         this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP).setOrigin(0.5, .9);
 
+        // add tall people
+        // NOTE: please feel free to change the y-values below, not sure how to space them out more evenly
+        this.tall1 = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1).setScale(.8);
+        this.tall2 = new Tall(this, 0, -game.config.height/3 - this.tall1.height/2, 'tall').setOrigin(0.5, 1).setScale(.8);
+        this.tall3 = new Tall(this, 0, -2*game.config.height/3 - this.tall1.height, 'tall').setOrigin(0.5, 1).setScale(.8);
+
         // GAME OVER flag
         this.gameOver = false;
 
@@ -39,13 +46,16 @@ class Play extends Phaser.Scene {
     update() {  
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
-            // this.ship01.update();       // update & move spaceships (x3)
-            // this.ship02.update();
-            // this.ship03.update();
+            this.tall1.update();
+            this.tall2.update();
+            this.tall3.update();
         } 
 
         // scroll crowd background
         this.crowd.tilePositionY -= scrollSpeed;
+
+        // spawn tall people
+
     }
 
 
