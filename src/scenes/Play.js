@@ -6,6 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image('crowd', './assets/crowd.png');
         this.load.image('player', './assets/player.png');
+        this.load.image('tempEnd', './assets/tempEnd.png');
     }
 
     create() {
@@ -42,6 +43,16 @@ class Play extends Phaser.Scene {
 
     
     update() {  
+        // check key input for restart
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.scene.restart();
+        }
+        // check for restart
+        if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyM)) {
+            this.scene.start('menuScene');
+        }
+        
+        
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
             // this.enemies.update(); 
@@ -53,10 +64,24 @@ class Play extends Phaser.Scene {
         // scroll player
         this.player.y += scrollSpeed;
 
+        // game end condition -> player too long off screen
         if(this.player.y >= game.config.height * 2) {
             this.gameOver = true;
-            this.crowd.tilePositionY = 0;
+            this.add.image(0, 0, 'tempEnd').setOrigin(0, 0);
         }
+
+        // // check collisions for p1
+        // if(this.checkCollision(this.player, this.tall)) {
+        //     this.player.isHit();
+        //     this.shipExplode(this.ship03);
+        // }
+        // if(this.checkCollision(this.player, this.gloStick)) {
+        //     this.player.isHit();
+        //     this.shipExplode(this.ship02);
+        // }
+        // if(this.checkCollision(this.player, this.platform)) {
+        //     this.shipExplode(this.ship01);
+        // }
 
     }// end update()
 
