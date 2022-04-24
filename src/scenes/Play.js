@@ -70,20 +70,29 @@ class Play extends Phaser.Scene {
             this.add.image(0, 0, 'tempEnd').setOrigin(0, 0);
         }
 
-        // // check collisions for p1
+        // check collisions for raccoon
         // if(this.checkCollision(this.player, this.tall)) {
         //     this.player.isHit();
         //     this.shipExplode(this.ship03);
         // }
         // if(this.checkCollision(this.player, this.gloStick)) {
-        //     this.player.isHit();
-        //     this.shipExplode(this.ship02);
+            // this.player.isHit();
+            // this.shipExplode(this.ship02);
         // }
         // if(this.checkCollision(this.player, this.platform)) {
         //     this.shipExplode(this.ship01);
         // }
 
     }// end update()
+
+    checkCollision(player, tall) {
+        // simple AABB checking
+        if(player.x < tall.x + tall.width && player.x + player.width > tall.x && player.y < tall.y + tall.height && player.height + player.y > tall.y) {
+            return true;
+        } else {
+            return false;
+        }
+    } // end checkCollision()
 
 
 } // end Play scene
