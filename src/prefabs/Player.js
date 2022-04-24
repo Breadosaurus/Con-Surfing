@@ -1,6 +1,6 @@
 // player prefab
 class Player extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, leftKey, rightKey, upKey) {
+    constructor(scene, x, y, texture, frame, leftKey, rightKey, upKey, downKey) {
         super(scene, x, y, texture, frame);
 
         //add obj to existing scene
@@ -8,22 +8,25 @@ class Player extends Phaser.GameObjects.Sprite {
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.upKey = upKey;
+        this.dnKey = downKey;
         this.isHit = false;
         this.moveSpeed = 6;
 
     } // end constructor
 
     update() {
-        // // left/right mvt
+        // // left/right/up/down? mvt
         if(!this.isHit) {
             if(this.leftKey.isDown && this.x >= borderUISize + this.width/2) {
                 this.x -= this.moveSpeed;
-                this.anim.play
+                // this.anim.play
             } else if (this.rightKey.isDown && this.x <= game.config.width - borderUISize - this.width/2) {
                 this.x += this.moveSpeed;
             } else if (this.upKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
                 this.y -= this.moveSpeed;
-            }
+            } // else if (this.dnKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
+                // this.y -= this.moveSpeed;
+            // }
         }
 
         // fire button
