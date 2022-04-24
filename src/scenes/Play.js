@@ -6,8 +6,14 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image('crowd', './assets/crowd.png');
         this.load.image('player', './assets/player.png');
-        this.load.image('tempEnd', './assets/tempEnd.png');
+        this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
+        
+        this.load.spritesheet('oof', './assets/oofAnim.png', {frameWidth: 292, frameHeight: 183, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pLeft', './assets/leftAnim.png', {frameWidth: 376, frameHeight: 192, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pRight', './assets/rightAnim.png', {frameWidth: 381, frameHeight: 192, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pUp', './assets/upAnim.png', {frameWidth: 292, frameHeight: 183, startFrame: 0, endFrame: 1});
+        
     }
 
     create() {
@@ -38,6 +44,32 @@ class Play extends Phaser.Scene {
         this.tall1 = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1).setScale(.8);
         this.tall2 = new Tall(this, 0, -game.config.height/3 - this.tall1.height/2, 'tall').setOrigin(0.5, 1).setScale(.8);
         this.tall3 = new Tall(this, 0, -2*game.config.height/3 - this.tall1.height, 'tall').setOrigin(0.5, 1).setScale(.8);
+
+        // animation config
+        this.anims.create({
+            key: 'pLeft',
+            frames: this.anims.generateFrameNumbers('pLeft', {start: 0, end: 1}),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'pRight',
+            frames: this.anims.generateFrameNumbers('pRight', {start: 0, end: 1}),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'pUp',
+            frames: this.anims.generateFrameNumbers('pUp', {start: 0, end: 1}),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.anims.create({
+            key: 'oof',
+            frames: this.anims.generateFrameNumbers('oof', {start: 0, end: 1, first: 0}),
+            frameRate: 3,
+        });
+
 
         // GAME OVER flag
         this.gameOver = false;
@@ -76,20 +108,18 @@ class Play extends Phaser.Scene {
         // game end condition -> player too long off screen
         if(this.player.y >= game.config.height * 2) {
             this.gameOver = true;
-            this.add.image(0, 0, 'tempEnd').setOrigin(0, 0);
+            this.add.image(0, 0, 'end').setOrigin(0, 0);
         }
 
         // check collisions for raccoon
         if(this.checkCollision(this.player, this.tall1)) {
-            // this.player.isHit();
-            // this.shipExplode(this.ship03);
+            this.time.delayedCall(this.isHit(this.player));
         }
         if(this.checkCollision(this.player, this.tall2)) {
-            // this.player.isHit();
-            // this.shipExplode(this.ship02);
+            this.time.delayedCall(this.isHit(this.player));
         }
         if(this.checkCollision(this.player, this.tall3)) {
-            // this.shipExplode(this.ship01);
+            this.time.delayedCall(this.isHit(this.player));
         }
 
         // spawn tall people
@@ -117,6 +147,8 @@ class Play extends Phaser.Scene {
             player.alpha = 1;                     // make ship visible again
             boom.destroy();                     // remove explosion sprite
         });
+
+        
         // score add and repaint
         // this.score += ship.points;
         // this.scoreLeft.text = this.score;

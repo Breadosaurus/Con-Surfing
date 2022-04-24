@@ -19,13 +19,16 @@ class Player extends Phaser.GameObjects.Sprite {
         if(!this.isHit) {
             if(this.leftKey.isDown && this.x >= borderUISize + this.width/2) {
                 this.x -= this.moveSpeed;
-                // this.anim.play
+                // this.anims.play(pLeft);
             } else if (this.rightKey.isDown && this.x <= game.config.width - borderUISize - this.width/2) {
                 this.x += this.moveSpeed;
+                // this.anims.play(pRight);
             } else if (this.upKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
                 this.y -= this.moveSpeed;
+                // this.anims.play(pUp);
             } // else if (this.dnKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
                 // this.y -= this.moveSpeed;
+                // this.anims.play(pLeft);
             // }
         }
 
@@ -47,7 +50,7 @@ class Player extends Phaser.GameObjects.Sprite {
 
     reset() {
         this.isHit = false;
-        this.y = game.config.height - borderUISize - borderPadding;
+        // this.y = game.config.height - borderUISize - borderPadding;
     } // end reset()
 
 } // end Player prefab
