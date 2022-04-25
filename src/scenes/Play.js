@@ -55,12 +55,12 @@ class Play extends Phaser.Scene {
 
     
     update() {  
-        if(!this.gameOver) {         // upd8 ONLY if game not over + one player
+        if(!this.gameOver) {          // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
 
             // recycling tall ppl >:3
             this.enemyGroup.getChildren().forEach(function(enemy) { 
-                if (enemy.y >= game.config.height + enemy.height) {
+                if (enemy.active && enemy.y >= game.config.height + enemy.height) {
                     this.enemyGroup.killAndHide(enemy);
                     this.enemyGroup.remove(enemy);
                 }
@@ -89,18 +89,20 @@ class Play extends Phaser.Scene {
         if (this.enemyPool.getLength()) {    
             enemy = this.enemyPool.getFirst();
             enemy.x = enemy.randomX();
+            console.log('enemy recycled!');
             this.enemyPool.remove(enemy);
         // if enemyPool is empty, add a new enemy to the active group
         } else {
             enemy = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1);
             this.enemyGroup.add(enemy);
+            console.log('enemy added!');
         }
 
         // add glowstick
         // - code here -
 
         // set next enemy distance
-        this.nextEnemyDistance = Phaser.Math.Between(this.player.height * 0.5, this.player.height * 2);
+        this.nextEnemyDistance = Phaser.Math.Between(this.player.height * 2, this.player.height * 3);
     }
 
 
