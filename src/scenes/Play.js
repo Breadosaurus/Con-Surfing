@@ -31,11 +31,22 @@ class Play extends Phaser.Scene {
         // add raccoon
         this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP).setOrigin(0.5, .9);
 
-        // add tall people
-        // NOTE: please feel free to change the y-values below, not sure how to space them out more evenly
-        this.tall1 = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1).setScale(.8);
-        this.tall2 = new Tall(this, 0, -game.config.height/3 - this.tall1.height/2, 'tall').setOrigin(0.5, 1).setScale(.8);
-        this.tall3 = new Tall(this, 0, -2*game.config.height/3 - this.tall1.height, 'tall').setOrigin(0.5, 1).setScale(.8);
+        // group with all active tall ppl
+        this.enemyGroup = this.add.group({
+            removeCallback: function(enemy){
+                enemy.scene.enemyPool.add(enemy)
+            }
+        });
+
+        // pool of tall ppl that are not currently active
+        this.enemyPool = this.add.group({
+            removeCallback: function(enemy){
+                enemy.scene.enemyGroup.add(enemy)
+            }
+        })
+
+        // add enemy
+        this.addEnemy();
 
         // GAME OVER flag
         this.gameOver = false;
@@ -46,16 +57,50 @@ class Play extends Phaser.Scene {
     update() {  
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
-            this.tall1.update();
-            this.tall2.update();
-            this.tall3.update();
+
+            // recycling tall ppl >:3
+            this.enemyGroup.getChildren().forEach(function(enemy) { 
+                if (enemy.y >= game.config.height + enemy.height) {
+                    this.enemyGroup.killAndHide(enemy);
+                    this.enemyGroup.remove(enemy);
+                }
+                enemy.update();
+            }, this);
+
+            // adding tall ppl
+            this.enemyDistance = this.enemyGroup.getChildren()[this.enemyGroup.getLength()-1].y;
+            if (this.enemyDistance > this.nextEnemyDistance) {
+                this.addEnemy();
+            }
         } 
 
         // scroll crowd background
         this.crowd.tilePositionY -= scrollSpeed;
+    }
 
-        // spawn tall people
+    addEnemy() {
+        // change later so there's a 50/50 chance of the enemy being a tall person or a glowstick
 
+        let enemy;
+
+        // add tall person
+        
+        // if enemyPool is not empty, move one of its enemies to the active group
+        if (this.enemyPool.getLength()) {    
+            enemy = this.enemyPool.getFirst();
+            enemy.x = enemy.randomX();
+            this.enemyPool.remove(enemy);
+        // if enemyPool is empty, add a new enemy to the active group
+        } else {
+            enemy = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1);
+            this.enemyGroup.add(enemy);
+        }
+
+        // add glowstick
+        // - code here -
+
+        // set next enemy distance
+        this.nextEnemyDistance = Phaser.Math.Between(this.player.height * 0.5, this.player.height * 2);
     }
 
 
