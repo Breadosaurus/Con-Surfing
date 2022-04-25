@@ -2,7 +2,7 @@ class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
     }
-    //testing
+
     preload() {
         this.load.image('crowd', './assets/crowd.png');
         this.load.image('player', './assets/player.png');
@@ -37,16 +37,27 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
         // add raccoon
-        this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setOrigin(0.5, 0.9);
+        this.player = new Player(this, game.config.width/2, game.config.height - 300 /*change to variable later*/, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setOrigin(0.5, 0);
         
         // this.player = this.physics.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'player');
         // this.cursors = this.input.keyboard.createCursorKeys();
 
-        // add tall people
-        // NOTE: please feel free to change the y-values below, not sure how to space them out more evenly
-        this.tall1 = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1).setScale(.8);
-        this.tall2 = new Tall(this, 0, -game.config.height/3 - this.tall1.height/2, 'tall').setOrigin(0.5, 1).setScale(.8);
-        this.tall3 = new Tall(this, 0, -2*game.config.height/3 - this.tall1.height, 'tall').setOrigin(0.5, 1).setScale(.8);
+         // group with all active tall ppl
+         this.enemyGroup = this.add.group({
+            removeCallback: function(enemy){
+                enemy.scene.enemyPool.add(enemy)
+            }
+        });
+
+        // pool of tall ppl that are not currently active
+        this.enemyPool = this.add.group({
+            removeCallback: function(enemy){
+                enemy.scene.enemyGroup.add(enemy)
+            }
+        })
+
+        // add enemy
+        this.addEnemy();
 
         // animation config
         this.anims.create({
@@ -98,9 +109,21 @@ class Play extends Phaser.Scene {
         
         if(!this.gameOver && !this.player.isHit) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
-            this.tall1.update();    // this.enemies.update(); 
-            this.tall2.update();    //this.platform.update();
-            this.tall3.update();
+
+            // recycling tall ppl >:3
+            this.enemyGroup.getChildren().forEach(function(enemy) { 
+                if (enemy.active && enemy.y >= game.config.height + enemy.height) {
+                    this.enemyGroup.killAndHide(enemy);
+                    this.enemyGroup.remove(enemy);
+                }
+                enemy.update();
+            }, this);
+
+            // adding tall ppl
+            this.enemyDistance = this.enemyGroup.getChildren()[this.enemyGroup.getLength()-1].y;
+            if (this.enemyDistance > this.nextEnemyDistance) {
+                this.addEnemy();
+            }
         }
 
         // scroll crowd background
@@ -109,7 +132,7 @@ class Play extends Phaser.Scene {
         this.player.y += scrollSpeed;
 
         // game end condition -> player too long off screen
-        if(this.player.y >= game.config.height * 2) {
+        if(this.player.y >= game.config.height + this.player.height) {
             this.gameOver = true;
             this.add.image(0, 0, 'end').setOrigin(0, 0);
         }
@@ -118,42 +141,30 @@ class Play extends Phaser.Scene {
         // if(this.checkCollision(this.player, this.Tall)) {
         //     this.time.delayedCall(this.isHit(this.player));
         // }
-        if(this.checkCollision(this.player, this.tall1)) {
-            if (!this.player.isHit){
-                this.isHit(this.player);
-            } 
-        }
-        if(this.checkCollision(this.player, this.tall2)) {
-            if (!this.player.isHit){
-                this.isHit(this.player);
-            } 
-        }
-        if(this.checkCollision(this.player, this.tall3)) {
-            if (!this.player.isHit){
-                this.isHit(this.player);
-            } 
-        }
-
-        // spawn tall people
+        this.enemyGroup.getChildren().forEach(function(enemy) { 
+            if (this.checkCollision(this.player, enemy)) {
+                if (!this.player.isHit) {
+                    this.isHit(this.player);
+                } 
+            }
+        }, this);
 
     }// end update()
 
     checkCollision(player, tall) {
         // simple AABB checking
-        if(player.x < tall.x + (obScale)*(tall.width) && player.x + player.width > tall.x && player.y < tall.y + (obScale)*(tall.height) && player.height + player.y > (tall.y)) {
+        if(player.x - player.width/2 < tall.x && player.x + player.width/2 > tall.x - tall.width/2 && player.y < tall.y && player.y + player.height > tall.y - tall.height) {
             return true;
-            console.log("collision true")
         } else {
             return false;
         }
     } // end checkCollision()
 
     isHit(player) {
-        this.player.isHit = true
+        this.player.isHit = true;
         // temporarily hide ship
         player.alpha = 0;
-        // create explosion sprite @ ship's position
-        let boom = this.add.sprite(player.x, player.y, 'oof').setOrigin(0, 0);
+        let boom = this.add.sprite(player.x, player.y, 'oof').setOrigin(0.5, 0);
         boom.anims.play('oof');             // play explode anim
         boom.on('animationcomplete', () => {    // callback after anim completes
             player.reset();                       // reset ship position
@@ -172,6 +183,32 @@ class Play extends Phaser.Scene {
         // play explosion sfx
         // this.sound.play('sfx_wrap');
     } // end shipExplode()
+
+    addEnemy() {
+        // change later so there's a 50/50 chance of the enemy being a tall person or a glowstick
+
+        let enemy;
+
+        // add tall person
+        
+        // if enemyPool is not empty, move one of its enemies to the active group
+        if (this.enemyPool.getLength()) {    
+            enemy = this.enemyPool.getFirst();
+            enemy.x = enemy.randomX();
+            this.enemyPool.remove(enemy);
+        // if enemyPool is empty, add a new enemy to the active group
+        } else {
+            enemy = new Tall(this, 0, 0, 'tall').setOrigin(0.5, 1);
+            this.enemyGroup.add(enemy);
+        }
+
+        // add glowstick
+        // - code here -
+
+        // set next enemy distance
+        this.nextEnemyDistance = Phaser.Math.Between(this.player.height * 2, this.player.height * 3);
+    }
+
 
 
 } // end Play scene

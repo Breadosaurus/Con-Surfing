@@ -16,7 +16,7 @@ let game = new Phaser.Game(config);
 let keyR, keyM, keyLEFT, keyRIGHT, keyUP, keyDOWN; //keyA, keyD, keyW;
 
 // set scroll speed
-let scrollSpeed = 1.5;
+let scrollSpeed = 2;
 let obScale = .6;
 
 let borderUISize = game.config.height / 25; 
