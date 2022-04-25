@@ -129,7 +129,9 @@ class Play extends Phaser.Scene {
         // scroll crowd background
         this.crowd.tilePositionY -= scrollSpeed;
         // scroll player
-        this.player.y += scrollSpeed;
+        if (!this.player.upKey.isDown) {
+            this.player.y += scrollSpeed;
+        }
 
         // game end condition -> player too long off screen
         if(this.player.y >= game.config.height + this.player.height) {
