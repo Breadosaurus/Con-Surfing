@@ -9,10 +9,10 @@ class Play extends Phaser.Scene {
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
         
-        this.load.spritesheet('oof', './assets/oofAnim.png', {frameWidth: 292, frameHeight: 183, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pLeft', './assets/leftAnim.png', {frameWidth: 376, frameHeight: 192, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pRight', './assets/rightAnim.png', {frameWidth: 381, frameHeight: 192, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pUp', './assets/upAnim.png', {frameWidth: 292, frameHeight: 183, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('oof', './assets/oofAnim.png', {frameWidth: 146, frameHeight: 183, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pLeft', './assets/leftAnim.png', {frameWidth: 188, frameHeight: 192, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pRight', './assets/rightAnim.png', {frameWidth: 190.5, frameHeight: 192, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('pUp', './assets/upAnim.png', {frameWidth: 146, frameHeight: 183, startFrame: 0, endFrame: 1});
         
     }
 
@@ -37,7 +37,10 @@ class Play extends Phaser.Scene {
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
         // add raccoon
-        this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP).setOrigin(0.5, .9);
+        this.player = new Player(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setOrigin(0.5, 0.9);
+        
+        // this.player = this.physics.add.sprite(game.config.width/2, game.config.height - borderUISize - borderPadding, 'player');
+        // this.cursors = this.input.keyboard.createCursorKeys();
 
         // add tall people
         // NOTE: please feel free to change the y-values below, not sure how to space them out more evenly
@@ -112,14 +115,23 @@ class Play extends Phaser.Scene {
         }
 
         // check collisions for raccoon
+        // if(this.checkCollision(this.player, this.Tall)) {
+        //     this.time.delayedCall(this.isHit(this.player));
+        // }
         if(this.checkCollision(this.player, this.tall1)) {
-            this.time.delayedCall(this.isHit(this.player));
+            if (!this.player.isHit){
+                this.isHit(this.player);
+            } 
         }
         if(this.checkCollision(this.player, this.tall2)) {
-            this.time.delayedCall(this.isHit(this.player));
+            if (!this.player.isHit){
+                this.isHit(this.player);
+            } 
         }
         if(this.checkCollision(this.player, this.tall3)) {
-            this.time.delayedCall(this.isHit(this.player));
+            if (!this.player.isHit){
+                this.isHit(this.player);
+            } 
         }
 
         // spawn tall people
@@ -128,7 +140,7 @@ class Play extends Phaser.Scene {
 
     checkCollision(player, tall) {
         // simple AABB checking
-        if(player.x < tall.x + tall.width && player.x + player.width > tall.x && player.y < tall.y + tall.height && player.height + player.y > tall.y) {
+        if(player.x < tall.x + (obScale)*(tall.width) && player.x + player.width > tall.x && player.y < tall.y + (obScale)*(tall.height) && player.height + player.y > (tall.y)) {
             return true;
             console.log("collision true")
         } else {
@@ -137,6 +149,7 @@ class Play extends Phaser.Scene {
     } // end checkCollision()
 
     isHit(player) {
+        this.player.isHit = true
         // temporarily hide ship
         player.alpha = 0;
         // create explosion sprite @ ship's position

@@ -8,7 +8,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.upKey = upKey;
-        this.dnKey = downKey;
+        this.downKey = downKey;
         this.isHit = false;
         this.moveSpeed = 6;
 
@@ -26,10 +26,11 @@ class Player extends Phaser.GameObjects.Sprite {
             } else if (this.upKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
                 this.y -= this.moveSpeed;
                 // this.anims.play(pUp);
-            } // else if (this.dnKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
-                // this.y -= this.moveSpeed;
-                // this.anims.play(pLeft);
-            // }
+            } 
+            else if (this.downKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
+                this.y += this.moveSpeed;
+                // this.anims.play(pMove);
+            }
         }
 
         // fire button
