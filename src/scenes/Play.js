@@ -117,6 +117,13 @@ class Play extends Phaser.Scene {
                     this.enemyGroup.remove(enemy);
                 }
                 enemy.update();
+
+                // check collisions for raccoon
+                if (this.checkCollision(this.player, enemy)) {
+                    if (!this.player.isHit) {
+                        this.isHit(this.player);
+                    } 
+                }
             }, this);
 
             // adding tall ppl
@@ -129,33 +136,21 @@ class Play extends Phaser.Scene {
         // scroll crowd background
         this.crowd.tilePositionY -= scrollSpeed;
         // scroll player
-        if (!this.player.upKey.isDown) {
+        if (!(keyUP.isDown || keyDOWN.isDown)) {
             this.player.y += scrollSpeed;
         }
 
         // game end condition -> player too long off screen
-        if(this.player.y >= game.config.height + this.player.height) {
+        if(this.player.y >= game.config.height) {
             this.gameOver = true;
             this.add.image(0, 0, 'end').setOrigin(0, 0);
         }
-
-        // check collisions for raccoon
-        // if(this.checkCollision(this.player, this.Tall)) {
-        //     this.time.delayedCall(this.isHit(this.player));
-        // }
-        this.enemyGroup.getChildren().forEach(function(enemy) { 
-            if (this.checkCollision(this.player, enemy)) {
-                if (!this.player.isHit) {
-                    this.isHit(this.player);
-                } 
-            }
-        }, this);
 
     }// end update()
 
     checkCollision(player, tall) {
         // simple AABB checking
-        if(player.x - player.width/2 < tall.x && player.x + player.width/2 > tall.x - tall.width/2 && player.y < tall.y && player.y + player.height > tall.y - tall.height) {
+        if(player.x - player.width/2 < tall.x + tall.width/2 && player.x + player.width/2 > tall.x - tall.width/2 && player.y < tall.y && player.y + player.height > tall.y - tall.height) {
             return true;
         } else {
             return false;
