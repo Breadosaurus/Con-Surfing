@@ -1,24 +1,20 @@
-class Tall extends Phaser.GameObjects.Sprite {
+class Tall extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
-        this.x = this.randomX();
-        scene.add.existing(this);                       // add to existing scene
+
+        // add to existing scene
+        scene.add.existing(this);                
+        scene.physics.add.existing(this);
+
+        // set immovable so player can't push enemies around
+        this.setImmovable(true);
+
+        // set velocity to 0
+        this.setVelocity(0, 0);
     }
 
     update() {
-        // move tall ppl down
-        if (this.active) {
-            this.y += scrollSpeed;
-        }
-    }
-
-    // returns random horizontal location
-    randomX() {
-        let position = 0;
-        // generate random position until sprite fits on screen
-        while (position < this.width/2 || position > game.config.width - this.width/2) {
-            position = Math.random() * game.config.width;
-        }
-        return position;
+        // scroll down along with the crowd
+        this.y += scrollSpeed;
     }
 }

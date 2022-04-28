@@ -1,57 +1,60 @@
 // player prefab
-class Player extends Phaser.GameObjects.Sprite {
+class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, frame, leftKey, rightKey, upKey, downKey) {
         super(scene, x, y, texture, frame);
 
-        //add obj to existing scene
+        // add sprite to scene 
         scene.add.existing(this);
+        scene.physics.add.existing(this);
+
+        this.setBounce(1, 1);
+
+        // set keys
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.upKey = upKey;
         this.downKey = downKey;
+
+
         this.isHit = false;
-        this.moveSpeed = 4;
+        this.moveSpeed = 200;
 
     } // end constructor
 
     update() {
         // // left/right/up/down? mvt
         if(!this.isHit) {
-            if(this.leftKey.isDown && this.x >= borderUISize + this.width/2) {
-                this.x -= this.moveSpeed;
-                // this.anims.play(pLeft);
-            } else if (this.rightKey.isDown && this.x <= game.config.width - borderUISize - this.width/2) {
-                this.x += this.moveSpeed;
-                // this.anims.play(pRight);
-            } else if (this.upKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
-                this.y -= this.moveSpeed;
-                // this.anims.play(pUp);
-            } 
-            else if (this.downKey.isDown && this.y >= borderUISize * 5 + borderPadding) {
-                this.y += this.moveSpeed;
-                // this.anims.play(pMove);
+
+            if(this.leftKey.isDown) {
+                this.setVelocityX(-this.moveSpeed);
+                this.anims.play('pLeft', true);
+            } else if (this.rightKey.isDown) {
+                this.setVelocityX(this.moveSpeed);
+                this.anims.play('pRight', true);
+            } else {
+                this.setVelocityX(0);
+            }
+
+            if (this.upKey.isDown) {
+                this.setVelocityY(-this.moveSpeed);
+                this.anims.play('pUp', true);
+            } else if (this.downKey.isDown) {
+                this.setVelocityY(this.moveSpeed);
+                this.anims.play('pMove', true);
+            } else {
+                this.setVelocityY(0);
+                this.anims.play('pMove', true);
             }
         }
 
-        // fire button
-        // if(Phaser.Input.Keyboard.JustDown(this.upKey) && !this.isHit) {
-        //     this.isHit = true;
-        // }
-        
-        // // if fired, move up
-        // if(this.isHit && this.y >= borderUISize * 3 + borderPadding) {
-        //     this.y -= this.moveSpeed;
-        // }
-
-        // // reset on miss
-        // if(this.y <= borderUISize * 3 + borderPadding) {
-        //     this.reset();
-        // }
+        this.y += scrollSpeed;
     } // end update()
 
-    reset() {
-        this.isHit = false;
-        // this.y = game.config.height - borderUISize - borderPadding;
-    } // end reset()
-
+    bump() {
+        this.isHit = true;
+        this.anims.play('oof', true);                 // play explode anim
+        this.on('animationcomplete', () => {    // callback after anim completes
+            this.isHit = false;                     
+        });
+    } 
 } // end Player prefab
