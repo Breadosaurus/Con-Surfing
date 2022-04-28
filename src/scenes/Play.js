@@ -18,12 +18,16 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        // place crowd background 
-        this.crowd = this.add.tileSprite(0, 0, 650, 825, 'crowd').setOrigin(0, 0);
-
         // place stage
-        this.stageBtm = 200;
         this.stage = this.add.image(0, 0, 'stage').setOrigin(0, 1).setDepth(1);
+        this.stageBtm = this.stage.y + this.stage.height;
+
+        // place crowd background 
+        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setOrigin(0, 0);
+
+        this.camera = this.cameras.main.setBounds(0, -this.stage.height, game.config.width, game.config.height + this.stage.height);
+
+        
 
         // animation config
         this.anims.create({
@@ -58,8 +62,11 @@ class Play extends Phaser.Scene {
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 
+        // initial distance btwn raccoon and bottom of screen
+        this.raccoonStart = 300;
+        
         // add raccoon WITH PHYSICS
-        this.player = new Player(this, game.config.width/2, game.config.height - 300 /*change to variable later*/, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
+        this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
 
         // group with all active tall ppl
         this.enemyGroup = this.add.group({
@@ -103,7 +110,12 @@ class Play extends Phaser.Scene {
         
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
-            this.stage.y = this.stageBtm;
+
+            // percentage of crowd raccoon has travelled 
+            this.playerProgress = (game.config.height - this.player.y) / (game.config.height - this.stage.y);
+
+            // scroll camera according to playerProgress
+            this.camera.scrollY = this.playerProgress * -(this.stage.height + 75);
 
             // recycling tall ppl >:3
             this.enemyGroup.getChildren().forEach(function(enemy) { 
@@ -115,7 +127,7 @@ class Play extends Phaser.Scene {
             }, this);
 
             // adding tall ppl
-            this.enemyDistY = this.getLastEnemy().y - this.stageBtm;
+            this.enemyDistY = this.getLastEnemy().y - this.stage.y;
             if (this.enemyDistY > this.nextEnemyDistY) {
                 this.addEnemy();
             }
@@ -128,7 +140,7 @@ class Play extends Phaser.Scene {
             // game end condition -> player too long off screen
             if(this.player.y >= game.config.height) {
                 this.gameOver = true;
-                this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(100);
+                this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(2);
             }
         }
     }// end update()
@@ -151,15 +163,14 @@ class Play extends Phaser.Scene {
             let newX = 0;
             if (this.getLastEnemy()) {
                 newX = this.newEnemyX();
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stage.y, 'tall').setScale(0.7).setOrigin(0.5, 1);
             } else {
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stage.y, 'tall').setScale(0.7).setOrigin(0.5, 1);
                 newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
             enemy.x = newX;
             this.enemyGroup.add(enemy);
         }
-        console.log("new enemy X: " + enemy.x);
 
         // add glowstick
         // - code here -

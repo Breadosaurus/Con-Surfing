@@ -17,7 +17,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         this.isHit = false;
-        this.moveSpeed = 200;
+        this.moveSpeed = 150;
 
     } // end constructor
 
@@ -40,10 +40,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('pUp', true);
             } else if (this.downKey.isDown) {
                 this.setVelocityY(this.moveSpeed);
-                this.anims.play('pMove', true);
+                //this.anims.play('pMove', true);
             } else {
                 this.setVelocityY(0);
-                this.anims.play('pMove', true);
+                //this.anims.play('pMove', true);
             }
         }
 
