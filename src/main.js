@@ -18,5 +18,7 @@ let keyR, keyM, keyLEFT, keyRIGHT, keyUP, keyDOWN; //keyA, keyD, keyW;
 let scrollSpeed = 2.5;
 let obScale = .6;
 
-let borderUISize = game.config.height / 25; 
-let borderPadding = borderUISize / 3;
+let leftBound = 50;
+let rightBound = game.config.width - leftBound;
+
+let lastEnemy = {};
