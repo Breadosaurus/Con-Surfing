@@ -94,6 +94,18 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
+        //this.timeCounter = this.game.settings.gameTimer;
+        //this.timer = this.add.text(borderUISize + borderPadding + 525, borderUISize + borderPadding*2, this.timeCounter,scoreConfig);
+        //this.timeRemain = this.game.settings.gameTimer;
+
+
+        this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
+        this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
+        
+        
+
     }
 
     
@@ -102,7 +114,7 @@ class Play extends Phaser.Scene {
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
         }
-        // check for restart
+        // check for menu
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyM)) {
             this.scene.start('menuScene');
         }
@@ -139,6 +151,13 @@ class Play extends Phaser.Scene {
 
             // game end condition -> player too long off screen
             if(this.player.y >= game.config.height) {
+          
+         //This is where I tried to implement the timer but it didn't work :( 
+                //this.timeRemain -= delta;
+                //this.timeCounter = time; 
+                //this.timeCounter = Math.floor(this.timeRemain/1000) + 1; 
+                //this.timer.text = this.timeCounter; 
+                
                 this.gameOver = true;
                 this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(2);
             }
@@ -207,5 +226,6 @@ class Play extends Phaser.Scene {
         return newX;
         */
     }
+    
 
 } // end Play scene

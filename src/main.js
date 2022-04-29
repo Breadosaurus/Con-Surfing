@@ -12,13 +12,16 @@ let config = {
 let game = new Phaser.Game(config); 
 
 // reserve keyboard vars
-let keyR, keyM, keyLEFT, keyRIGHT, keyUP, keyDOWN; //keyA, keyD, keyW;
+let keyF, keyR, keyM, keyLEFT, keyRIGHT, keyUP, keyDOWN; //keyA, keyD, keyW;
 
+
+let borderUISize = game.config.height / 30; 
+let borderPadding = borderUISize / 3; 
 // set scroll speed
 let scrollSpeed = 2;
-let obScale = .6;
 
 let leftBound = 50;
 let rightBound = game.config.width - leftBound;
 
 let lastEnemy = {};
+
