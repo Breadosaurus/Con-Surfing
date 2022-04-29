@@ -3,8 +3,23 @@ class Menu extends Phaser.Scene {
         super("menuScene");
     }
 
+    preload() {
+        this.load.image('titlescreen', './assets/Consurf Main Menu.png');;
+
+        
+    }
+
     create() {
-        this.add.text(20,20, "Con-Surfing Menu"); 
-        this.scene.start("playScene"); 
+        
+        this.background = this.add.image(325, 412.5, 'titlescreen');
+          
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    }
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(keyF)){
+            this.scene.launch('playScene');
+        }
     }
 }
