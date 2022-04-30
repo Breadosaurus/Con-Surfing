@@ -21,6 +21,8 @@ class Play extends Phaser.Scene {
         // place stage
         this.stage = this.add.image(0, 0, 'stage').setOrigin(0, 1).setDepth(1);
         this.stageBtm = this.stage.y + this.stage.height;
+        //Checking if bottom of stage is in right spot for timer to start
+        this.stageCheck = this.stageBtm
 
         // place crowd background 
         this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setOrigin(0, 0);
@@ -94,9 +96,9 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
-        //this.timeCounter = this.game.settings.gameTimer;
-        //this.timer = this.add.text(borderUISize + borderPadding + 525, borderUISize + borderPadding*2, this.timeCounter,scoreConfig);
-        //this.timeRemain = this.game.settings.gameTimer;
+        this.timeCounter = this.game.settings.gameTimer;
+        this.timer = this.add.text(borderUISize + borderPadding + 525, borderUISize + borderPadding*2, this.timeCounter);
+        this.timeRemain = this.game.settings.gameTimer;
 
 
         this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
@@ -109,7 +111,7 @@ class Play extends Phaser.Scene {
     }
 
     
-    update() {  
+    update(time, delta) {  
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
@@ -147,23 +149,27 @@ class Play extends Phaser.Scene {
             // scroll crowd background
             this.crowd.tilePositionY -= scrollSpeed;
 
-
+            //Adding in Gamer Timer
+        
+            if(this.player.y < game.config.height/2) {
+                this.timeRemain += delta;
+                this.timeCounter = time; 
+                this.timeCounter = Math.floor(this.timeRemain/1000) + 1; 
+                this.timer.text = this.timeCounter; 
+            } 
+            
 
             // game end condition -> player too long off screen
             if(this.player.y >= game.config.height) {
           
-         //This is where I tried to implement the timer but it didn't work :( 
-                //this.timeRemain -= delta;
-                //this.timeCounter = time; 
-                //this.timeCounter = Math.floor(this.timeRemain/1000) + 1; 
-                //this.timer.text = this.timeCounter; 
-                
+         
                 this.gameOver = true;
                 this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(2);
             }
 
             this.physics.world.wrap(this.player, 0);
         }
+
     }// end update()
 
     addEnemy() {
