@@ -167,7 +167,7 @@ class Play extends Phaser.Scene {
                 this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(2);
             }
 
-            this.physics.world.wrap(this.player, 0);
+            //this.physics.world.wrap(this.player, 0);
         }
 
     }// end update()
