@@ -1,17 +1,16 @@
-class Menu extends Phaser.Scene {
+class Tutorial extends Phaser.Scene {
     constructor() {
-        super("menuScene");
+        super("tutorialScene");
     }
 
     preload() {
-        this.load.image('titlescreen', './assets/Consurf Main Menu.png');;
+        this.load.image('tutorial', './assets/tutorial.png');;
 
-        
     }
 
     create() {
         
-        this.background = this.add.image(325, 412.5, 'titlescreen');
+        this.background = this.add.image(325, 412.5, 'tutorial');
           
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
@@ -19,10 +18,10 @@ class Menu extends Phaser.Scene {
     }
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyF)){
-            this.scene.launch('tutorialScene');
-            // game.settings = {
-            //     gameTimer: 0
-            // }
+            this.scene.launch('playScene');
+            game.settings = {
+                gameTimer: 0
+            }
         }
 
     }
