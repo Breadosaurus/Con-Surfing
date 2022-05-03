@@ -19,11 +19,11 @@ class Tutorial extends Phaser.Scene {
     }
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyF)){
-            this.scene.launch('playScene');
             this.sound.play('tutorialSelect');
             game.settings = {
                 gameTimer: 0
             }
+            this.scene.start('playScene');
         }
 
     }

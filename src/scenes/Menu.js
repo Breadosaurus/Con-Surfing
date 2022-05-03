@@ -36,8 +36,8 @@ class Menu extends Phaser.Scene {
         this.menu.play('menuAnim', true);
         
         if (Phaser.Input.Keyboard.JustDown(keyF)){
-            this.scene.launch('tutorialScene');
             this.sound.play('menuSelect');
+            this.scene.start('tutorialScene');
             // game.settings = {
             //     gameTimer: 0
             // }

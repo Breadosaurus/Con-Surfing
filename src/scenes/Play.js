@@ -14,16 +14,21 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // length of bottom stage gradient
+        this.gradient = 90;
+
         // place stage
-        this.stage = this.add.sprite(0, 0, 'stage').setOrigin(0, .9).setDepth();
-        this.stageBtm = this.stage.y + this.stage.height;
-        //Checking if bottom of stage is in right spot for timer to start
-        this.stageCheck = this.stageBtm
+        this.stage = this.add.sprite(0, this.gradient, 'stage').setOrigin(0, 1).setDepth(3);
+
+        // current bottom of stage
+        this.stageBtm = this.stage.height - this.gradient;
+        
+        
 
         // place crowd background 
-        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setOrigin(0, 0);
+        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stageBtm, 'crowd').setOrigin(0, 0);
 
-        this.camera = this.cameras.main.setBounds(0, -this.stage.height, game.config.width, game.config.height + this.stage.height);
+        this.camera = this.cameras.main.setBounds(0, -this.stageBtm, game.config.width, game.config.height + this.stage.height);
 
 
         // define keys
@@ -156,11 +161,14 @@ class Play extends Phaser.Scene {
         if(!this.gameOver) {         // upd8 ONLY if game not over + one player
             this.player.update();     // player mvt
 
+            // bottom of the stage before gradient starts
+            this.stageBtm = this.stage.y - this.gradient;
+
             // percentage of crowd raccoon has travelled 
-            this.playerProgress = (game.config.height - this.player.y) / (game.config.height - this.stage.y);
+            this.playerProgress = (game.config.height - this.player.y) / (game.config.height - (this.stage.y + 100));
 
             // scroll camera according to playerProgress
-            this.camera.scrollY = this.playerProgress * -(this.stage.height + 75);
+            this.camera.scrollY = this.playerProgress * -(this.stage.height - this.gradient);
 
             // recycling tall ppl >:3
             this.enemyGroup.getChildren().forEach(function(enemy) { 
@@ -172,7 +180,7 @@ class Play extends Phaser.Scene {
             }, this);
 
             // adding tall ppl
-            this.enemyDistY = this.getLastEnemy().y - this.stage.y;
+            this.enemyDistY = this.getLastEnemy().y - this.stageBtm;
             if (this.enemyDistY > this.nextEnemyDistY) {
                 this.addEnemy();
             }
@@ -185,7 +193,7 @@ class Play extends Phaser.Scene {
 
             //Adding in Gamer Timer
         
-            if(this.player.y < game.config.height/2) {
+            if(this.playerProgress >= 1) {
                 this.timeRemain += delta;
                 this.timeCounter = time; 
                 this.timeCounter = Math.floor(this.timeRemain/1000) + 1; 
@@ -226,9 +234,9 @@ class Play extends Phaser.Scene {
             let newX = 0;
             if (this.getLastEnemy()) {
                 newX = this.newEnemyX();
-                enemy = new Tall(this, 0, this.stage.y, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
             } else {
-                enemy = new Tall(this, 0, this.stage.y, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
                 newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
             enemy.x = newX;
