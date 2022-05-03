@@ -104,7 +104,47 @@ class Play extends Phaser.Scene {
             frameRate: 3,
             repeat: -1,
         });
-        
+        this.anims.create({         // green anim
+            key: 'green',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'gloGreen_',
+                start: 1,
+                end: 2,
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });this.anims.create({         // blue anim
+            key: 'blue',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'gloBlu_',
+                start: 1,
+                end: 2,
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });this.anims.create({         // purple anim
+            key: 'purple',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'gloPurp_',
+                start: 1,
+                end: 2,
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });this.anims.create({         // prange anim
+            key: 'orange',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'gloOrang_',
+                start: 1,
+                end: 2,
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
 
         // group with all active tall ppl
         this.enemyGroup = this.add.group({
