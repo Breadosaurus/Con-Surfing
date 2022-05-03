@@ -10,6 +10,9 @@ class Play extends Phaser.Scene {
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
         this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
+        this.load.audio('restart', './assets/revive.mp3');
+        this.load.audio('menu', './assets/endToMenu.mp3');
+        this.load.audio('theme', './assets/consurf.mp3');
         
     }
 
@@ -23,13 +26,19 @@ class Play extends Phaser.Scene {
         // current bottom of stage
         this.stageBtm = this.stage.height - this.gradient;
         
-        
+        // music!! concert!! banger!!
+        this.concert = this.sound.add('theme', {
+            mute: false,
+            volume: 0.75,
+            rate: 1,
+            loop: true,
+        });
+        this.concert.play();
 
         // place crowd background 
         this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stageBtm, 'crowd').setOrigin(0, 0);
 
         this.camera = this.cameras.main.setBounds(0, -this.stageBtm, game.config.width, game.config.height + this.stage.height);
-
 
         // define keys
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -134,7 +143,7 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 3,
             repeat: -1,
-        });this.anims.create({         // prange anim
+        });this.anims.create({         // orange anim
             key: 'orange',
             frames: this.anims.generateFrameNames('consurf_atlas', {
                 prefix: 'gloOrang_',
@@ -190,17 +199,23 @@ class Play extends Phaser.Scene {
     update(time, delta) {  
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            this.concert.stop();
             this.scene.restart();
         }
         // check for menu
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyM)) {
+            this.concert.stop();
             this.scene.start('menuScene');
         }
         
+        // music!! concert!! banger!!
+        // if(!this.gameOver && !this.music.isPlaying) {
+            
+         
         
         if(!this.gameOver) {         // upd8 ONLY if game not over 
             this.player.update();     // player mvt
-
+            
             // bottom of the stage before gradient starts
             this.stageBtm = this.stage.y - this.gradient;
 
@@ -244,6 +259,7 @@ class Play extends Phaser.Scene {
             // game end condition 
             if(this.player.y >= game.config.height) {         
                 this.gameOver = true;
+                this.concert.setVolume(0.25);
                 this.sound.play('taco_bell_of_death');
                 this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
                 this.end.anims.play('endAnim', true);
