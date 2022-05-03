@@ -9,11 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/player.png');
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
-        
-        this.load.spritesheet('oof', './assets/oofAnim.png', {frameWidth: 146, frameHeight: 183, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pLeft', './assets/leftAnim.png', {frameWidth: 188, frameHeight: 192, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pRight', './assets/rightAnim.png', {frameWidth: 190.5, frameHeight: 192, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('pUp', './assets/upAnim.png', {frameWidth: 146, frameHeight: 183, startFrame: 0, endFrame: 1});
+        this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
         
     }
 
@@ -25,36 +21,10 @@ class Play extends Phaser.Scene {
         this.stageCheck = this.stageBtm
 
         // place crowd background 
-        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setOrigin(0, 0);
+        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setScale(.5).setOrigin(0, 0);
 
         this.camera = this.cameras.main.setBounds(0, -this.stage.height, game.config.width, game.config.height + this.stage.height);
 
-        
-
-        // animation config
-        this.anims.create({
-            key: 'pLeft',
-            frames: this.anims.generateFrameNumbers('pLeft', {start: 0, end: 1}),
-            frameRate: 3,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'pRight',
-            frames: this.anims.generateFrameNumbers('pRight', {start: 0, end: 1}),
-            frameRate: 3,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'pUp',
-            frames: this.anims.generateFrameNumbers('pUp', {start: 0, end: 1}),
-            frameRate: 3,
-            repeat: -1,
-        });
-        this.anims.create({
-            key: 'oof',
-            frames: this.anims.generateFrameNumbers('oof', {start: 0, end: 1, first: 0}),
-            frameRate: 5,
-        });
 
         // define keys
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -69,6 +39,59 @@ class Play extends Phaser.Scene {
         
         // add raccoon WITH PHYSICS
         this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
+        //this.player = this.add.sprite
+        // this.player = this.physics.add.sprite(game.config.width/2, game.config.height - this.raccoonStart, 'consurf-atlas', 'up').setScale(.6).setOrigin(.5, 0);
+        // this.cursors = this.input.keyboard.createCursorKeys();
+
+        // animation config
+        this.anims.create({         // turning either direction
+            key: 'turn',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'turn_',
+                start: 1,
+                end: 3,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 6,
+            repeat: -1,
+        });
+        this.anims.create({         // up
+            key: 'up',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'up_',
+                start: 1,
+                end: 3,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 6,
+            repeat: -1,
+        });
+        this.anims.create({         
+            key: 'oof',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'oof_',
+                start: 1,
+                end: 2,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 3,
+        });
+        this.anims.create({         // endscreen anim
+            key: 'endAnim',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'end_',
+                start: 1,
+                end: 2,
+                zeroPad: 4
+            }),
+            frameRate: 3,
+            repeat: -1,
+            // yoyo: true,
+        });
+        
 
         // group with all active tall ppl
         this.enemyGroup = this.add.group({
@@ -164,7 +187,9 @@ class Play extends Phaser.Scene {
           
          
                 this.gameOver = true;
-                this.add.image(0, 0, 'end').setOrigin(0, 0).setDepth(2);
+                this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
+                this.end.anims.play('endAnim', true);
+                this.sound.play('taco_bell_of_death');
             }
 
             //this.physics.world.wrap(this.player, 0);
