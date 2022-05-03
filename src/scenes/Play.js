@@ -15,13 +15,13 @@ class Play extends Phaser.Scene {
 
     create() {
         // place stage
-        this.stage = this.add.image(0, 0, 'stage').setOrigin(0, 1).setDepth(1);
+        this.stage = this.add.sprite(0, 0, 'stage').setOrigin(0, .9).setDepth();
         this.stageBtm = this.stage.y + this.stage.height;
         //Checking if bottom of stage is in right spot for timer to start
         this.stageCheck = this.stageBtm
 
         // place crowd background 
-        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setScale(.5).setOrigin(0, 0);
+        this.crowd = this.add.tileSprite(0, 0, 'crowd').setOrigin(0, 0);
 
         this.camera = this.cameras.main.setBounds(0, -this.stage.height, game.config.width, game.config.height + this.stage.height);
 
@@ -39,11 +39,20 @@ class Play extends Phaser.Scene {
         
         // add raccoon WITH PHYSICS
         this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
-        //this.player = this.add.sprite
-        // this.player = this.physics.add.sprite(game.config.width/2, game.config.height - this.raccoonStart, 'consurf-atlas', 'up').setScale(.6).setOrigin(.5, 0);
-        // this.cursors = this.input.keyboard.createCursorKeys();
 
         // animation config
+        this.anims.create({         // turning either direction
+            key: 'stage',
+            frames: this.anims.generateFrameNames('consurf_atlas', {
+                prefix: 'stage_',
+                start: 1,
+                end: 3,
+                suffix: '',
+                zeroPad: 4
+            }),
+            frameRate: 6,
+            repeat: -1,
+        });
         this.anims.create({         // turning either direction
             key: 'turn',
             frames: this.anims.generateFrameNames('consurf_atlas', {
@@ -89,7 +98,6 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 3,
             repeat: -1,
-            // yoyo: true,
         });
         
 
@@ -124,7 +132,7 @@ class Play extends Phaser.Scene {
         this.timeRemain = this.game.settings.gameTimer;
 
 
-        this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
+        // this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
@@ -172,6 +180,9 @@ class Play extends Phaser.Scene {
             // scroll crowd background
             this.crowd.tilePositionY -= scrollSpeed;
 
+            // the band plays!!!
+            this.stage.play('stage', true);
+
             //Adding in Gamer Timer
         
             if(this.player.y < game.config.height/2) {
@@ -182,7 +193,7 @@ class Play extends Phaser.Scene {
             } 
             
 
-            // game end condition -> player too long off screen
+            // game end condition 
             if(this.player.y >= game.config.height) {
           
          

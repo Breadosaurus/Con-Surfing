@@ -25,9 +25,9 @@ class Menu extends Phaser.Scene {
                 end: 4,
                 zeroPad: 4
             }),
-            frameRate: 5,
+            frameRate: 6,
             repeat: -1,
-            // yoyo: true,
+            yoyo: true,
         });
     }
 
