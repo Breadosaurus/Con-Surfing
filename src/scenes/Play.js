@@ -46,7 +46,7 @@ class Play extends Phaser.Scene {
         this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
 
         // animation config
-        this.anims.create({         // turning either direction
+        this.anims.create({         // the boys will bounce!
             key: 'stage',
             frames: this.anims.generateFrameNames('consurf_atlas', {
                 prefix: 'stage_',
@@ -70,7 +70,7 @@ class Play extends Phaser.Scene {
             frameRate: 6,
             repeat: -1,
         });
-        this.anims.create({         // up
+        this.anims.create({         // up/idle
             key: 'up',
             frames: this.anims.generateFrameNames('consurf_atlas', {
                 prefix: 'up_',
@@ -158,7 +158,7 @@ class Play extends Phaser.Scene {
         }
         
         
-        if(!this.gameOver) {         // upd8 ONLY if game not over + one player
+        if(!this.gameOver) {         // upd8 ONLY if game not over 
             this.player.update();     // player mvt
 
             // bottom of the stage before gradient starts
@@ -202,13 +202,11 @@ class Play extends Phaser.Scene {
             
 
             // game end condition 
-            if(this.player.y >= game.config.height) {
-          
-         
+            if(this.player.y >= game.config.height) {         
                 this.gameOver = true;
+                this.sound.play('taco_bell_of_death');
                 this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
                 this.end.anims.play('endAnim', true);
-                this.sound.play('taco_bell_of_death');
             }
 
             //this.physics.world.wrap(this.player, 0);
