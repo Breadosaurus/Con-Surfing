@@ -259,7 +259,7 @@ class Play extends Phaser.Scene {
             // game end condition 
             if(this.player.y >= game.config.height) {         
                 this.gameOver = true;
-                this.concert.setVolume(0.25);
+                this.concert.setVolume(0.20);
                 this.sound.play('taco_bell_of_death');
                 this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
                 this.end.anims.play('endAnim', true);
