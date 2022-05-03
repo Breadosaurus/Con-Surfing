@@ -21,7 +21,7 @@ class Play extends Phaser.Scene {
         this.stageCheck = this.stageBtm
 
         // place crowd background 
-        this.crowd = this.add.tileSprite(0, 0, 'crowd').setOrigin(0, 0);
+        this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stage.height, 'crowd').setOrigin(0, 0);
 
         this.camera = this.cameras.main.setBounds(0, -this.stage.height, game.config.width, game.config.height + this.stage.height);
 
