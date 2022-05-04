@@ -22,28 +22,28 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     } // end constructor
 
     update() {
-        // // left/right/up/down? mvt
+        // // left/right/up/down mvt
         if(!this.isHit) {
 
-            if(this.leftKey.isDown) {
-                this.setVelocityX(-this.moveSpeed);
-                this.anims.play('pLeft', true);
-            } else if (this.rightKey.isDown) {
+            if (this.rightKey.isDown) {
                 this.setVelocityX(this.moveSpeed);
-                this.anims.play('pRight', true);
+                this.setFlip(true, false);
+                this.anims.play('turn', true);
+            } else if (this.leftKey.isDown) {
+                this.setVelocityX(-this.moveSpeed);
+                this.resetFlip();
+                this.anims.play('turn', true);
             } else {
                 this.setVelocityX(0);
             }
 
             if (this.upKey.isDown) {
                 this.setVelocityY(-this.moveSpeed);
-                this.anims.play('pUp', true);
+                this.anims.play('up', true);
             } else if (this.downKey.isDown) {
                 this.setVelocityY(this.moveSpeed);
-                //this.anims.play('pMove', true);
             } else {
                 this.setVelocityY(0);
-                //this.anims.play('pMove', true);
             }
         }
 
@@ -52,7 +52,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     bump() {
         this.isHit = true;
-        this.anims.play('oof', true);                 // play explode anim
+        this.anims.play('oof', true);                 // play hit anim
+        // this.
         this.on('animationcomplete', () => {    // callback after anim completes
             this.isHit = false;                     
         });
