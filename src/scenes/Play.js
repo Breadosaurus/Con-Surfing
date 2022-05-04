@@ -180,13 +180,10 @@ class Play extends Phaser.Scene {
         
         // add enemy
         this.addEnemy();
-        
-        // GAME OVER flag
-        this.gameOver = false;
 
         // timer
         this.timeCounter = this.game.settings.gameTimer;
-        // display config
+        // stylize timer
         let timeConfig = {
             fontFamily: 'Comic Sans MS',
             fontSize: '20px',
@@ -199,15 +196,16 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 69
         } 
-        this.timer = this.add.text(borderUISize + borderPadding + 480, borderUISize + borderPadding*2, this.timeCounter, timeConfig);
+        this.timer = this.add.text(borderUISize + borderPadding + 470, borderUISize + borderPadding*2, this.timeCounter, timeConfig).setDepth(3);
         this.timeRemain = this.game.settings.gameTimer;
-
 
         // this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
         // this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
         
+        // GAME OVER flag
+        this.gameOver = false;
     }
 
     
@@ -269,15 +267,24 @@ class Play extends Phaser.Scene {
                 this.timer.text = this.timeCounter; 
             } 
             
-
             // game end condition 
             if(this.player.y >= game.config.height) {         
                 this.gameOver = true;
                 this.concert.setVolume(0.20);
                 this.sound.play('taco_bell_of_death');
-                this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
+                this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(3);
                 this.end.anims.play('endAnim', true);
-                this.timer.text = this.timer.text;
+                let scoreConfig = {
+                    fontFamily: 'Comic Sans MS',
+                    fontSize: '48px',
+                    color: '#b0e3f7',
+                    align: 'center',
+                    padding: {
+                        top: 5,
+                        bottom: 5, 
+                    },
+                } 
+                this.add.text(310, 540, `${this.timeCounter}s`, scoreConfig).setDepth(5);
             }
 
             this.physics.world.wrap(this.player, 0);
