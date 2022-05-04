@@ -123,7 +123,8 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 3,
             repeat: -1,
-        });this.anims.create({         // blue anim
+        });
+        this.anims.create({         // blue anim
             key: 'blue',
             frames: this.anims.generateFrameNames('consurf_atlas', {
                 prefix: 'gloBlu_',
@@ -133,7 +134,8 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 3,
             repeat: -1,
-        });this.anims.create({         // purple anim
+        });
+        this.anims.create({         // purple anim
             key: 'purple',
             frames: this.anims.generateFrameNames('consurf_atlas', {
                 prefix: 'gloPurp_',
@@ -143,10 +145,11 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 3,
             repeat: -1,
-        });this.anims.create({         // orange anim
-            key: 'orange',
+        });
+        this.anims.create({         // orange anim
+            key: 'raised',
             frames: this.anims.generateFrameNames('consurf_atlas', {
-                prefix: 'gloOrang_',
+                prefix: 'raised_',
                 start: 1,
                 end: 2,
                 zeroPad: 4
@@ -181,6 +184,7 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
+        // timer
         this.timeCounter = this.game.settings.gameTimer;
         this.timer = this.add.text(borderUISize + borderPadding + 525, borderUISize + borderPadding*2, this.timeCounter);
         this.timeRemain = this.game.settings.gameTimer;
@@ -200,11 +204,13 @@ class Play extends Phaser.Scene {
         // check key input for restart
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.concert.stop();
+            this.sound.play('restart');
             this.scene.restart();
         }
         // check for menu
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyM)) {
             this.concert.stop();
+            this.sound.play('menu');
             this.scene.start('menuScene');
         }
         
@@ -288,9 +294,9 @@ class Play extends Phaser.Scene {
             let newX = 0;
             if (this.getLastEnemy()) {
                 newX = this.newEnemyX();
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.6).setOrigin(0.5, 1);
             } else {
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.7).setOrigin(0.5, 1);
+                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.6).setOrigin(0.5, 1);
                 newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
             enemy.x = newX;
