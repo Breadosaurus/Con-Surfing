@@ -186,12 +186,25 @@ class Play extends Phaser.Scene {
 
         // timer
         this.timeCounter = this.game.settings.gameTimer;
-        this.timer = this.add.text(borderUISize + borderPadding + 525, borderUISize + borderPadding*2, this.timeCounter);
+        // display config
+        let timeConfig = {
+            fontFamily: 'Comic Sans MS',
+            fontSize: '20px',
+            backgroundColor: '#4345b0',
+            color: '#eaeafc',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5, 
+            },
+            fixedWidth: 69
+        } 
+        this.timer = this.add.text(borderUISize + borderPadding + 480, borderUISize + borderPadding*2, this.timeCounter, timeConfig);
         this.timeRemain = this.game.settings.gameTimer;
 
 
         // this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
+        // this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
         
@@ -264,6 +277,7 @@ class Play extends Phaser.Scene {
                 this.sound.play('taco_bell_of_death');
                 this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
                 this.end.anims.play('endAnim', true);
+                this.timer.text = this.add.text(borderUISize + borderPadding + 480, borderUISize + borderPadding*4, this.timeCounter + 's');
             }
 
             //this.physics.world.wrap(this.player, 0);
