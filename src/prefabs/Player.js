@@ -17,7 +17,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         this.isHit = false;
-        this.moveSpeed = 300;
+        this.moveSpeed = 250;
 
     } // end constructor
 
