@@ -49,9 +49,6 @@ class Menu extends Phaser.Scene {
             this.line.stop();
             this.sound.play('menuSelect');
             this.scene.start('tutorialScene');
-            // game.settings = {
-            //     gameTimer: 0
-            // }
         }
 
 

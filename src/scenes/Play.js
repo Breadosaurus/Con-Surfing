@@ -195,8 +195,6 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
         
-        
-
     }
 
     
@@ -213,9 +211,6 @@ class Play extends Phaser.Scene {
             this.sound.play('menu');
             this.scene.start('menuScene');
         }
-        
-        // music!! concert!! banger!!
-        // if(!this.gameOver && !this.music.isPlaying) {
             
          
         
