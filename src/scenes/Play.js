@@ -237,7 +237,6 @@ class Play extends Phaser.Scene {
             // recycling tall ppl >:3
             this.enemyGroup.getChildren().forEach((enemy) => { 
                 if (enemy.active && enemy.y - enemy.height >= this.camera.scrollY + game.config.height) {
-                    console.log("enemy recycled");
                     this.enemyGroup.killAndHide(enemy);
                     this.enemyGroup.remove(enemy);
                 } else {
@@ -309,7 +308,7 @@ class Play extends Phaser.Scene {
             }
             this.enemyGroup.add(enemy);
         }
-        console.log(enemy.type + " added at " + enemy.x);
+  
         // add glowstick
         // - code here -
 
