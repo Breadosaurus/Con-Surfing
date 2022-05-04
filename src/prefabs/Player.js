@@ -37,7 +37,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setVelocityX(0);
             }
 
-            if (this.upKey.isDown) {
+            if (this.upKey.isDown && this.y > this.scene.stage.y) {
                 this.setVelocityY(-this.moveSpeed);
                 this.anims.play('up', true);
             } else if (this.downKey.isDown) {
@@ -53,9 +53,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     bump() {
         this.isHit = true;
         this.anims.play('oof', true);                 // play hit anim
-        // this.
-        this.on('animationcomplete', () => {    // callback after anim completes
-            this.isHit = false;                     
+        this.on('animationcomplete', () => {
+            this.setVelocity(0, 0)
         });
+        this.paralyze = this.scene.time.delayedCall(700, () => {
+            this.isHit = false;
+        }, this);
+        
     } 
 } // end Player prefab

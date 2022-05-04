@@ -100,7 +100,7 @@ class Play extends Phaser.Scene {
                 suffix: '',
                 zeroPad: 4
             }),
-            frameRate: 3,
+            frameRate: 10,
         });
         this.anims.create({         // endscreen anim
             key: 'endAnim',
@@ -303,9 +303,9 @@ class Play extends Phaser.Scene {
             let newX = 0;
             if (this.getLastEnemy()) {
                 newX = this.newEnemyX();
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.6).setOrigin(0.5, 1);
+                enemy = new Enemy(this, 0, this.stageBtm, 'tall').setScale(0.5).setOrigin(0.5, 1);
             } else {
-                enemy = new Tall(this, 0, this.stageBtm, 'tall').setScale(0.6).setOrigin(0.5, 1);
+                enemy = new Enemy(this, 0, this.stageBtm, 'tall').setScale(0.5).setOrigin(0.5, 1);
                 newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
             enemy.x = newX;
