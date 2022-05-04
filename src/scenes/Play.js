@@ -192,7 +192,7 @@ class Play extends Phaser.Scene {
             fontSize: '20px',
             backgroundColor: '#4345b0',
             color: '#eaeafc',
-            align: 'left',
+            align: 'center',
             padding: {
                 top: 5,
                 bottom: 5, 
@@ -277,10 +277,10 @@ class Play extends Phaser.Scene {
                 this.sound.play('taco_bell_of_death');
                 this.end = this.add.sprite(0, 0, 'end').setOrigin(0, 0).setDepth(2);
                 this.end.anims.play('endAnim', true);
-                this.timer.text = this.add.text(borderUISize + borderPadding + 480, borderUISize + borderPadding*4, this.timeCounter + 's');
+                this.timer.text = this.timer.text;
             }
 
-            //this.physics.world.wrap(this.player, 0);
+            this.physics.world.wrap(this.player, 0);
         }
 
     }// end update()
