@@ -37,7 +37,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setVelocityX(0);
             }
 
-            if (this.upKey.isDown) {
+            if (this.upKey.isDown && this.y > this.scene.stage.y) {
                 this.setVelocityY(-this.moveSpeed);
                 this.anims.play('up', true);
             } else if (this.downKey.isDown) {
