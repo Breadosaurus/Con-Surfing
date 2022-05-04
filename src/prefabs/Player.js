@@ -59,6 +59,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.paralyze = this.scene.time.delayedCall(700, () => {
             this.isHit = false;
         }, this);
-        
-    } 
+    } // end bump()
+    
+    speedBoost() {
+        this.boost = true
+        this.y = this.y + 500;
+        this.scene.time.delayedCall(500, () => {
+            this.boost = false;
+        }, this);
+    } // end speedBoost()
+
+
 } // end Player prefab

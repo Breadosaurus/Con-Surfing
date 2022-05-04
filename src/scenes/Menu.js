@@ -50,7 +50,6 @@ class Menu extends Phaser.Scene {
             this.sound.play('menuSelect');
             this.scene.start('tutorialScene');
         }
-
-
     }
+    
 }

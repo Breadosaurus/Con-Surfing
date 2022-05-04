@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/player.png');
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
+        this.load.image('hands', './assets/hands.png');
         this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
         this.load.audio('restart', './assets/revive.mp3');
         this.load.audio('menu', './assets/endToMenu.mp3');
@@ -237,6 +238,7 @@ class Play extends Phaser.Scene {
             // scroll camera according to playerProgress
             this.camera.scrollY = this.playerProgress * -(this.stage.height - this.gradient);
 
+            // enemies spawning
             // recycling tall ppl >:3
             this.enemyGroup.getChildren().forEach(function(enemy) { 
                 if (enemy.active && enemy.y >= game.config.height + enemy.height) {
@@ -292,6 +294,7 @@ class Play extends Phaser.Scene {
 
     }// end update()
 
+    // -----------#### ENEMY TIME ####----------- //
     addEnemy() {
         // change later so there's a 50/50 chance of the enemy being a tall person or a glowstick
 
@@ -355,5 +358,69 @@ class Play extends Phaser.Scene {
         */
     }
     
+
+    // -----------#### RAISED HANDS ####----------- //
+    addHand() {
+        // change later so there's a 50/50 chance of the enemy being a tall person or a glowstick
+
+        let hands;
+
+        // add tall person
+        
+        // if enemyPool is not empty, move one of its enemies to the active group
+        if (this.handsPool.getLength()) {   
+            let newX = this.newHandsX(); 
+            hands = this.handsPool.getFirst();
+            hands.x = newX;
+            this.handsPool.remove(hands);
+        // if enemyPool is empty, add a new enemy to the active group
+        } else { 
+            let newX = 0;
+            if (this.getLastHands()) {
+                newX = this.newHandsX();
+                hands = new Hands(this, 0, this.stageBtm, 'raised').setScale(0.5).setOrigin(0.5, 1);
+            } else {
+                enemy = new Enemy(this, 0, this.stageBtm, 'tall').setScale(0.5).setOrigin(0.5, 1);
+                newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
+            }
+            enemy.x = newX;
+            this.enemyGroup.add(enemy);
+        }
+
+        // add glowstick
+        // - code here -
+
+        // set next enemy distances
+        this.setNextEnemyDistY();
+    }
+
+    getLastEnemy() {
+        return this.enemyGroup.getChildren()[this.enemyGroup.getChildren().length - 1];
+    }
+
+    // set vertical distance between current and next enemy
+    setNextEnemyDistY() {
+        this.nextEnemyDistY = Phaser.Math.Between(this.getLastEnemy().height * 1.25, this.player.height * 2);
+    }
+
+    newEnemyX() {
+
+        return Phaser.Math.Between(leftBound + this.getLastEnemy().width/2, rightBound - this.getLastEnemy().width/2);
+        /*
+        let lastEnemy = this.getLastEnemy();
+        let newX = lastEnemy.x;
+        let distance = Phaser.Math.Between(this.minXDist, rightBound - leftBound);
+        if (Math.random() < 0.5) {
+            distance = -distance;
+        }
+        newX = lastEnemy.x + distance;
+        
+        if (newX < leftBound + lastEnemy.width/2) {
+                newX = leftBound + lastEnemy.width/2;
+            }
+
+        return newX;
+        */
+    }
 
 } // end Play scene

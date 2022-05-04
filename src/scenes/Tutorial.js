@@ -6,7 +6,6 @@ class Tutorial extends Phaser.Scene {
     preload() {
         this.load.image('tutorial', './assets/tutorial.png');
         this.load.audio('tutorialSelect', './assets/tutorialSelect.mp3');
-
     }
 
     create() {
@@ -17,6 +16,7 @@ class Tutorial extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
     }
+
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyF)){
             this.sound.play('tutorialSelect');
@@ -25,6 +25,5 @@ class Tutorial extends Phaser.Scene {
             }
             this.scene.start('playScene');
         }
-
     }
 }
