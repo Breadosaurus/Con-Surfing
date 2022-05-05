@@ -6,7 +6,7 @@ Date Completed: Wednesday, May 4, 2022
 
 Creative Tilt: 
 Technical Interest: Camera movement that tracks the player's progress ties the concert stage and score counter together. Score only increases when the stage is fully on screen, so it truly counts how long you've been up close with the band! 
-Visual Style: All art ties together very well and follows a coherent art direction. Music and sound effects also fit very well, all made completely by team members :) Overall theme isn't common to the endless runner, as the player has an extra goal of staying at a certain position so that they can watch the concert fully for a higher score.
+Visual Style: All art ties together very well and follows a coherent art direction, considering multiple team members worked on major final assets. Music and sound effects also fit very well, all made completely by team members :) Overall theme isn't common to the endless runner, as the player has an extra goal of staying at a certain position so that they can watch the concert fully for a higher score.
 */
 
 let config = {
