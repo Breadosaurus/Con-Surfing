@@ -181,9 +181,6 @@ class Play extends Phaser.Scene {
         // add collisions between player and all enemies
         this.physics.add.collider(this.player, this.enemyGroup, () => this.player.bump()/*, this.player.ouch()*/);
         
-        // collisions with world bounds 
-        this.player.setCollideWorldBounds(true);
-
         // add overlap between player and all hands
         this.physics.add.overlap(this.player, this.handsGroup, () => this.player.speedBoost());
 
@@ -214,8 +211,8 @@ class Play extends Phaser.Scene {
         this.timeRemain = this.game.settings.gameTimer;
 
         // add borders
-        this.add.rectangle(0,0, leftBound ,game.config.height, 0x2F3079).setOrigin(0,0);
-        this.add.rectangle(rightBound, 0, game.config.width - rightBound, game.config.height, 0x2F3079).setOrigin(0,0);
+        this.add.rectangle(0, 0, leftBound, game.config.height, 0x2F3079).setOrigin(0, 0);
+        this.add.rectangle(rightBound, 0, game.config.width - rightBound, game.config.height, 0x2F3079).setOrigin(0, 0);
         
         // game over flag
         this.gameOver = false;

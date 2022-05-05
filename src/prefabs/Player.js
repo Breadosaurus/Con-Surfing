@@ -33,11 +33,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update() {
         // left/right/up/down mvt
         if(!this.isHit) {
-            if (this.rightKey.isDown) {
+            if (this.rightKey.isDown && this.x < rightBound - this.width/3) {
                 this.setVelocityX(this.moveSpeed);
                 this.setFlip(true, false);
                 this.anims.play('turn', true);
-            } else if (this.leftKey.isDown) {
+            } else if (this.leftKey.isDown && this.x > leftBound + this.width/3) {
                 this.setVelocityX(-this.moveSpeed);
                 this.resetFlip();
                 this.anims.play('turn', true);
