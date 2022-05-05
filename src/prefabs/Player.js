@@ -17,14 +17,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         this.isHit = false;
-        this.moveSpeed = 250;
+        this.moveSpeed = 225;
+
+        // speed boost
+        this.boostSpeed = 200;
 
     } // end constructor
 
     update() {
         // // left/right/up/down mvt
         if(!this.isHit) {
-
             if (this.rightKey.isDown) {
                 this.setVelocityX(this.moveSpeed);
                 this.setFlip(true, false);
@@ -46,8 +48,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.setVelocityY(0);
             }
         }
-
-        this.y += scrollSpeed;
+        if (!this.boost) {
+            this.y += scrollSpeed;
+        }
+        
     } // end update()
 
     bump() {
@@ -62,11 +66,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     } // end bump()
     
     speedBoost() {
-        this.boost = true
-        this.y = this.y + 500;
-        this.scene.time.delayedCall(500, () => {
-            this.boost = false;
-        }, this);
+        if (!this.cooldown) {
+            this.boost = true;
+            this.cooldown = true;
+            console.log("speedBoost start");
+            this.moveSpeed += this.boostSpeed;
+            this.scene.time.delayedCall(200, () => {
+                this.moveSpeed -= this.boostSpeed;
+                this.boost = false;
+            }, this);
+            // cooldown
+            this.scene.time.delayedCall(1000, () => {
+                this.cooldown = false;
+            }, this);
+        } 
     } // end speedBoost()
 
 

@@ -54,7 +54,7 @@ class Play extends Phaser.Scene {
         this.raccoonStart = 300;
         
         // add raccoon WITH PHYSICS
-        this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0);
+        this.player = new Player(this, game.config.width/2, game.config.height - this.raccoonStart, 'player', 0, keyLEFT, keyRIGHT, keyUP, keyDOWN).setScale(0.6).setOrigin(0.5, 0).setDepth(2.5);
 
         // animation config
         this.anims.create({         // the boys will bounce!
@@ -102,7 +102,7 @@ class Play extends Phaser.Scene {
                 suffix: '',
                 zeroPad: 4
             }),
-            frameRate: 10,
+            frameRate: 12,
         });
         this.anims.create({         // endscreen anim
             key: 'endAnim',
@@ -160,6 +160,10 @@ class Play extends Phaser.Scene {
             repeat: -1,
         });
 
+        // min and max vertical distance between enemies
+        this.minEnemyDistY = 200;
+        this.maxEnemyDistY = 300;
+
         // group with all active tall ppl
         this.enemyGroup = this.add.group({
             removeCallback: (enemy) => {
@@ -172,10 +176,27 @@ class Play extends Phaser.Scene {
             removeCallback: (enemy) => {
                 this.enemyGroup.add(enemy)
             }
-        })
+        });
+
+        // group with all active hands
+        this.handsGroup = this.add.group({
+            removeCallback: (hands) => {
+                this.handsPool.add(hands)
+            }
+        });
+
+        // pool of hands that are not currently active
+        this.handsPool = this.add.group({
+            removeCallback: (hands) => {
+                this.handsGroup.add(hands)
+            }
+        });
 
         // add collisions between player and all enemies
-        this.physics.add.collider(this.player, this.enemyGroup, ()=>this.player.bump());
+        this.physics.add.collider(this.player, this.enemyGroup, () => this.player.bump());
+        
+        // add overlap between player and all hands
+        this.physics.add.overlap(this.player, this.handsGroup, () => this.player.speedBoost());
 
         // set min & max horizontal distance between two enemies
         this.minXDist = 10;
@@ -185,6 +206,7 @@ class Play extends Phaser.Scene {
 
         // timer
         this.timeCounter = this.game.settings.gameTimer;
+
         // stylize timer
         let timeConfig = {
             fontFamily: 'Comic Sans MS',
@@ -198,13 +220,13 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 69
         } 
-        this.timer = this.add.text(borderUISize + borderPadding + 470, borderUISize + borderPadding*2, this.timeCounter, timeConfig).setDepth(3);
+        // add timer
+        this.timer = this.add.text(borderUISize + borderPadding + 470, this.camera.scrollY + borderUISize + borderPadding*2, this.timeCounter, timeConfig).setDepth(3);
         this.timeRemain = this.game.settings.gameTimer;
 
-        // this.add.rectangle(0,0, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
-        // this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x2F3079).setOrigin(0,0);
-        this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
+        // add borders
+        this.add.rectangle(0,0, leftBound ,game.config.height, 0x2F3079).setOrigin(0,0);
+        this.add.rectangle(rightBound, 0, game.config.width - rightBound, game.config.height, 0x2F3079).setOrigin(0,0);
         
         // game over flag
         this.gameOver = false;
@@ -226,8 +248,6 @@ class Play extends Phaser.Scene {
             this.sound.play('menu');
             this.scene.start('menuScene');
         }
-            
-         
         
         if(!this.gameOver) {         // upd8 ONLY if game not over 
             this.player.update();     // player mvt
@@ -236,7 +256,7 @@ class Play extends Phaser.Scene {
             this.stageBtm = this.stage.y - this.gradient;
 
             // percentage of crowd raccoon has travelled 
-            this.playerProgress = (game.config.height - this.player.y) / (game.config.height - (this.stage.y + 100));
+            this.playerProgress = (game.config.height - this.player.y) / (game.config.height - (this.stage.y + 125));
 
             if (this.playerProgress > 1) {
                 this.playerProgress = 1;
@@ -244,10 +264,8 @@ class Play extends Phaser.Scene {
 
             // scroll camera according to playerProgress
             this.camera.scrollY = this.playerProgress * -(this.stage.height - this.gradient);
-            
 
-            // enemies spawning
-            // recycling tall ppl >:3
+            // moving off-screen enemies from group to pool
             this.enemyGroup.getChildren().forEach((enemy) => { 
                 if (enemy.active && enemy.y - enemy.height >= this.camera.scrollY + game.config.height) {
                     this.enemyGroup.killAndHide(enemy);
@@ -257,11 +275,21 @@ class Play extends Phaser.Scene {
                 }
             }, this);
 
-            // adding tall ppl
+            // adding enemies
             this.enemyDistY = this.getLastEnemy().y - this.stageBtm;
             if (this.enemyDistY > this.nextEnemyDistY) {
                 this.addEnemy();
             }
+
+            // moving off-screen hands from group to pool
+            this.handsGroup.getChildren().forEach((hands) => { 
+                if (hands.active && hands.y - hands.height >= this.camera.scrollY + game.config.height) {
+                    this.handsGroup.killAndHide(hands);
+                    this.handsGroup.remove(hands);
+                } else {
+                    hands.update();
+                }
+            }, this);
 
             // scroll crowd background
             this.crowd.tilePositionY -= scrollSpeed;
@@ -270,13 +298,12 @@ class Play extends Phaser.Scene {
             this.stage.play('stage', true);
 
             //Adding in Gamer Timer
-        
             if(this.playerProgress >= 1) {
                 this.timeRemain += delta;
                 this.timeCounter = time; 
                 this.timeCounter = Math.floor(this.timeRemain/1000) + 1; 
                 this.timer.text = this.timeCounter; 
-            } 
+            }
             
             // game end condition 
             if(this.player.y >= game.config.height) {         
@@ -287,7 +314,7 @@ class Play extends Phaser.Scene {
                 this.end.anims.play('endAnim', true);
                 let scoreConfig = {
                     fontFamily: 'Comic Sans MS',
-                    fontSize: '48px',
+                    fontSize: '46px',
                     color: '#b0e3f7',
                     align: 'center',
                     padding: {
@@ -295,7 +322,7 @@ class Play extends Phaser.Scene {
                         bottom: 5, 
                     },
                 } 
-                this.add.text(310, 540, `${this.timeCounter}s`, scoreConfig).setDepth(5);
+                this.add.text(345, 545, `${this.timeCounter} secs`, scoreConfig).setDepth(5).setOrigin(0.5, 0);
             }
 
             this.physics.world.wrap(this.player, 0);
@@ -305,14 +332,7 @@ class Play extends Phaser.Scene {
 
     // -----------#### ENEMY TIME ####----------- //
     addEnemy() {
-        // change later so there's a 50/50 chance of the enemy being a tall person or a glowstick
-
-        console.log("group: " + this.enemyGroup.getLength());
-        console.log("pool: " + this.enemyPool.getLength());
-
         let enemy;
-
-        // add tall person
         
         // if enemyPool is not empty, move one of its enemies to the active group
         if (this.enemyPool.getLength()) {   
@@ -328,19 +348,23 @@ class Play extends Phaser.Scene {
         // if enemyPool is empty, add a new enemy to the active group
         } else { 
             enemy = new Enemy(this, 0, this.stageBtm, 'tall').setOrigin(0.5, 1);
+            // if this is not the first enemy in the game
             if (this.getLastEnemy()) {
                 enemy.x = this.newEnemyX(enemy);
+            // if this is the very first enemy in the game
             } else {
                 enemy.x = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
             this.enemyGroup.add(enemy);
         }
-  
-        // add glowstick
-        // - code here -
 
         // set next enemy distances
         this.setNextEnemyDistY();
+
+        // add hands
+        if (Math.random() < 0.5) {
+            this.addHands();
+        }
     }
 
     // returns the most recently dispatched enemy (closest to stage)
@@ -350,7 +374,7 @@ class Play extends Phaser.Scene {
 
     // set vertical distance between current and next enemy
     setNextEnemyDistY() {
-        this.nextEnemyDistY = Phaser.Math.Between(this.player.height * 1, this.player.height * 2);
+        this.nextEnemyDistY = Phaser.Math.Between(this.minEnemyDistY, this.maxEnemyDistY);
     }
 
     newEnemyX(enemy) {
@@ -359,7 +383,6 @@ class Play extends Phaser.Scene {
         let lastEnemyL = lastEnemy.x - lastEnemy.width/2;
         let lastEnemyR = lastEnemy.x + lastEnemy.width/2;
 
-        // initialize variables
         let newX;
         let side;
 
@@ -387,7 +410,24 @@ class Play extends Phaser.Scene {
 
     // -----------#### RAISED HANDS ####----------- //
     addHands() {
-       
+        let hands;
+
+        // if handsPool is not empty, move one of its hands to the active group
+        if (this.handsPool.getLength()) {   
+            hands = this.handsPool.getFirst();
+            hands.x = this.newEnemyX(hands);
+            hands.y = this.stageBtm;
+            hands.active = true;
+            hands.visible = true;
+            this.handsPool.remove(hands);
+
+        // if handsPool is empty, add new hands to active group
+        } else { 
+            hands = new Hands(this, 0, this.stageBtm, 'hands').setScale(0.7).setOrigin(0.5, 1); 
+            hands.x = this.newEnemyX(hands);
+        }
+
+        this.handsGroup.add(hands);
     }
 
 } // end Play scene
