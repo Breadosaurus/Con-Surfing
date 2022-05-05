@@ -181,6 +181,9 @@ class Play extends Phaser.Scene {
         // add collisions between player and all enemies
         this.physics.add.collider(this.player, this.enemyGroup, () => this.player.bump()/*, this.player.ouch()*/);
         
+        // collisions with world bounds 
+        this.player.setCollideWorldBounds(true);
+
         // add overlap between player and all hands
         this.physics.add.overlap(this.player, this.handsGroup, () => this.player.speedBoost());
 
@@ -292,7 +295,7 @@ class Play extends Phaser.Scene {
             }
             
             // game end condition 
-            if(this.player.y >= game.config.height) {         
+            if(this.player.y > game.config.height) {         
                 this.gameOver = true;
                 this.concert.setVolume(0.20);
                 this.sound.play('taco_bell_of_death');
