@@ -6,7 +6,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setType();
 
         // add to existing scene
-        // scene.physics.add.existing(this);
         scene.add.existing(this);                
         scene.physics.add.existing(this);
         this.updateSize();

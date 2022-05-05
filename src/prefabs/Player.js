@@ -15,17 +15,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.upKey = upKey;
         this.downKey = downKey;
 
-
+        // randomize function for hit sound
+        this.ouch_1 = scene.sound.add('ouch_1');
+        this.ouch_2 = scene.sound.add('ouch_2');
         this.isHit = false;
+
+        // regular speed
         this.moveSpeed = 225;
 
         // speed boost
         this.boostSpeed = 200;
+        this.surf_1 = scene.sound.add('surf_1');
+        this.surf_2 = scene.sound.add('surf_2');
 
     } // end constructor
 
     update() {
-        // // left/right/up/down mvt
+        // left/right/up/down mvt
         if(!this.isHit) {
             if (this.rightKey.isDown) {
                 this.setVelocityX(this.moveSpeed);
@@ -44,7 +50,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('up', true);
             } else if (this.downKey.isDown) {
                 this.setVelocityY(this.moveSpeed);
-            } else {
+            } 
+            else {
                 this.setVelocityY(0);
             }
         }
@@ -54,9 +61,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         
     } // end update()
 
+
     bump() {
         this.isHit = true;
-        this.anims.play('oof', true);                 // play hit anim
+        this.anims.play('oof', true);
+        if (Phaser.Math.Between(0, 1) == 0) {
+            this.ouch_1.play();
+        } else {
+            this.ouch_2.play();
+        }
         this.on('animationcomplete', () => {
             this.setVelocity(0, 0)
         });
@@ -65,11 +78,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }, this);
     } // end bump()
     
+
     speedBoost() {
         if (!this.cooldown) {
+            if (Phaser.Math.Between(0, 1) == 0) {
+                this.surf_1.play();
+            } else {
+                this.surf_2.play();
+            }
             this.boost = true;
             this.cooldown = true;
-            console.log("speedBoost start");
             this.moveSpeed += this.boostSpeed;
             this.scene.time.delayedCall(200, () => {
                 this.moveSpeed -= this.boostSpeed;

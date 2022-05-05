@@ -2,21 +2,7 @@ class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
     }
-
-    preload() {
-        this.load.image('crowd', './assets/crowd.png');
-        this.load.image('stage', './assets/stage.png');
-        this.load.image('player', './assets/player.png');
-        this.load.image('end', './assets/end.png');
-        this.load.image('tall', './assets/tall.png');
-        this.load.image('hands', './assets/hands.png');
-        this.load.image('glow', './assets/glow.png');
-        this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
-        this.load.audio('restart', './assets/revive.mp3');
-        this.load.audio('menu', './assets/endToMenu.mp3');
-        this.load.audio('theme', './assets/consurf.mp3');
-        
-    }
+    
 
     create() {
         // length of bottom stage gradient
@@ -193,7 +179,7 @@ class Play extends Phaser.Scene {
         });
 
         // add collisions between player and all enemies
-        this.physics.add.collider(this.player, this.enemyGroup, () => this.player.bump());
+        this.physics.add.collider(this.player, this.enemyGroup, () => this.player.bump()/*, this.player.ouch()*/);
         
         // add overlap between player and all hands
         this.physics.add.overlap(this.player, this.handsGroup, () => this.player.speedBoost());
@@ -324,8 +310,6 @@ class Play extends Phaser.Scene {
                 } 
                 this.add.text(345, 545, `${this.timeCounter} secs`, scoreConfig).setDepth(5).setOrigin(0.5, 0);
             }
-
-            this.physics.world.wrap(this.player, 0);
         }
 
     }// end update()
@@ -353,7 +337,7 @@ class Play extends Phaser.Scene {
                 enemy.x = this.newEnemyX(enemy);
             // if this is the very first enemy in the game
             } else {
-                enemy.x = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
+                enemy.x = Phaser.Math.Between(leftBound + enemy.width/*/2*/, rightBound - enemy.width/*/2*/);
             }
             this.enemyGroup.add(enemy);
         }
@@ -400,7 +384,7 @@ class Play extends Phaser.Scene {
         }
 
         if (side == 'left') {
-            newX = Phaser.Math.Between(leftBound + enemy.width/2, lastEnemy.x - lastEnemy.width/2 - this.minXDist - enemy.width/2);
+            newX = Phaser.Math.Between(leftBound + enemy.width/*/2*/, lastEnemy.x - lastEnemy.width/2 - this.minXDist - enemy.width/2);
         } else if (side == 'right') {
             newX = Phaser.Math.Between(lastEnemy.x + lastEnemy.width/2 + enemy.width/2 + this.minXDist, rightBound - enemy.width/2);
         }
