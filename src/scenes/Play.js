@@ -9,11 +9,8 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/player.png');
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
-<<<<<<< HEAD
         this.load.image('hands', './assets/hands.png');
-=======
         this.load.image('glow', './assets/glow.png');
->>>>>>> enemy-spawn-new
         this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
         this.load.audio('restart', './assets/revive.mp3');
         this.load.audio('menu', './assets/endToMenu.mp3');
@@ -209,13 +206,8 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
         
-<<<<<<< HEAD
-        // GAME OVER flag
-        this.gameOver = false;
-=======
         this.location = 0;
         
->>>>>>> enemy-spawn-new
     }
 
     
