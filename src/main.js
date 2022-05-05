@@ -29,7 +29,7 @@ let borderUISize = game.config.height / 30;
 let borderPadding = borderUISize / 3; 
 
 // set scroll speed
-let scrollSpeed = 1.6;
+let scrollSpeed = 2; //1.6
 
 let leftBound = 50;
 let rightBound = game.config.width - leftBound;

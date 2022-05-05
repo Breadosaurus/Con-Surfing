@@ -9,7 +9,11 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/player.png');
         this.load.image('end', './assets/end.png');
         this.load.image('tall', './assets/tall.png');
+<<<<<<< HEAD
         this.load.image('hands', './assets/hands.png');
+=======
+        this.load.image('glow', './assets/glow.png');
+>>>>>>> enemy-spawn-new
         this.load.audio('taco_bell_of_death', './assets/taco_bell.mp3');
         this.load.audio('restart', './assets/revive.mp3');
         this.load.audio('menu', './assets/endToMenu.mp3');
@@ -39,7 +43,7 @@ class Play extends Phaser.Scene {
         // place crowd background 
         this.crowd = this.add.tileSprite(0, 0, 650, 825 + this.stageBtm, 'crowd').setOrigin(0, 0);
 
-        this.camera = this.cameras.main.setBounds(0, -this.stageBtm, game.config.width, game.config.height + this.stage.height);
+        this.camera = this.cameras.main.setBounds(0, -this.stageBtm, game.config.width, game.config.height + this.stageBtm);
 
         // define keys
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -161,15 +165,15 @@ class Play extends Phaser.Scene {
 
         // group with all active tall ppl
         this.enemyGroup = this.add.group({
-            removeCallback: function(enemy){
-                enemy.scene.enemyPool.add(enemy)
+            removeCallback: (enemy) => {
+                this.enemyPool.add(enemy)
             }
         });
 
         // pool of tall ppl that are not currently active
         this.enemyPool = this.add.group({
-            removeCallback: function(enemy){
-                enemy.scene.enemyGroup.add(enemy)
+            removeCallback: (enemy) => {
+                this.enemyGroup.add(enemy)
             }
         })
 
@@ -177,7 +181,7 @@ class Play extends Phaser.Scene {
         this.physics.add.collider(this.player, this.enemyGroup, ()=>this.player.bump());
 
         // set min & max horizontal distance between two enemies
-        this.minXDist = this.player.width * 2;
+        this.minXDist = 10;
         
         // add enemy
         this.addEnemy();
@@ -205,8 +209,13 @@ class Play extends Phaser.Scene {
         this.add.rectangle(0,0, borderUISize,game.config.height, 0x2F3079).setOrigin(0,0);
         this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x2F3079).setOrigin(0,0);
         
+<<<<<<< HEAD
         // GAME OVER flag
         this.gameOver = false;
+=======
+        this.location = 0;
+        
+>>>>>>> enemy-spawn-new
     }
 
     
@@ -235,17 +244,23 @@ class Play extends Phaser.Scene {
             // percentage of crowd raccoon has travelled 
             this.playerProgress = (game.config.height - this.player.y) / (game.config.height - (this.stage.y + 100));
 
+            if (this.playerProgress > 1) {
+                this.playerProgress = 1;
+            }
+
             // scroll camera according to playerProgress
             this.camera.scrollY = this.playerProgress * -(this.stage.height - this.gradient);
+            
 
             // enemies spawning
             // recycling tall ppl >:3
-            this.enemyGroup.getChildren().forEach(function(enemy) { 
-                if (enemy.active && enemy.y >= game.config.height + enemy.height) {
+            this.enemyGroup.getChildren().forEach((enemy) => { 
+                if (enemy.active && enemy.y - enemy.height >= this.camera.scrollY + game.config.height) {
                     this.enemyGroup.killAndHide(enemy);
                     this.enemyGroup.remove(enemy);
+                } else {
+                    enemy.update();
                 }
-                enemy.update();
             }, this);
 
             // adding tall ppl
@@ -304,24 +319,26 @@ class Play extends Phaser.Scene {
         
         // if enemyPool is not empty, move one of its enemies to the active group
         if (this.enemyPool.getLength()) {   
-            let newX = this.newEnemyX(); 
             enemy = this.enemyPool.getFirst();
-            enemy.x = newX;
+            enemy.setType();
+            enemy.updateSize();
+            enemy.x = this.newEnemyX(enemy);
+            enemy.y = this.stageBtm;
+            enemy.active = true;
+            enemy.visible = true;
             this.enemyPool.remove(enemy);
+
         // if enemyPool is empty, add a new enemy to the active group
         } else { 
-            let newX = 0;
+            enemy = new Enemy(this, 0, this.stageBtm, 'tall').setOrigin(0.5, 1);
             if (this.getLastEnemy()) {
-                newX = this.newEnemyX();
-                enemy = new Enemy(this, 0, this.stageBtm, 'tall').setScale(0.5).setOrigin(0.5, 1);
+                enemy.x = this.newEnemyX(enemy);
             } else {
-                enemy = new Enemy(this, 0, this.stageBtm, 'tall').setScale(0.5).setOrigin(0.5, 1);
-                newX = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
+                enemy.x = Phaser.Math.Between(leftBound + enemy.width/2, rightBound - enemy.width/2);
             }
-            enemy.x = newX;
             this.enemyGroup.add(enemy);
         }
-
+  
         // add glowstick
         // - code here -
 
@@ -335,29 +352,41 @@ class Play extends Phaser.Scene {
 
     // set vertical distance between current and next enemy
     setNextEnemyDistY() {
-        this.nextEnemyDistY = Phaser.Math.Between(this.getLastEnemy().height * 1.25, this.player.height * 2);
+        this.nextEnemyDistY = Phaser.Math.Between(this.player.height * 1, this.player.height * 2);
     }
 
-    newEnemyX() {
-
-        return Phaser.Math.Between(leftBound + this.getLastEnemy().width/2, rightBound - this.getLastEnemy().width/2);
-        /*
-        let lastEnemy = this.getLastEnemy();
-        let newX = lastEnemy.x;
-        let distance = Phaser.Math.Between(this.minXDist, rightBound - leftBound);
-        if (Math.random() < 0.5) {
-            distance = -distance;
-        }
-        newX = lastEnemy.x + distance;
+    newEnemyX(enemy) {
         
-        if (newX < leftBound + lastEnemy.width/2) {
-                newX = leftBound + lastEnemy.width/2;
-            }
+        //return Phaser.Math.Between(leftBound + this.getLastEnemy().width/2, rightBound - this.getLastEnemy().width/2);
+
+        let lastEnemy = this.getLastEnemy();
+        let lastEnemyL = lastEnemy.x - lastEnemy.width/2;
+        let lastEnemyR = lastEnemy.x + lastEnemy.width/2;
+
+        let newX;
+        let side;
+
+        // if space to left of last enemy is too small to fit new enemy
+        if (lastEnemyL - leftBound < this.minXDist + enemy.width) {
+            // generate new enemy to right of last enemy
+            side = 'right';
+        // if space to right of last enemy is too small to fit new enemy
+        } else if (rightBound - lastEnemyR < this.minXDist + enemy.width) {
+            // generate new enemy to left of last enemy
+            side = 'left';
+        } else {
+            // randomly pick one side to generate new enemy
+            side = Math.random < 0.5 ? 'left' : 'right';
+        }
+
+        if (side == 'left') {
+            newX = Phaser.Math.Between(leftBound + enemy.width/2, lastEnemy.x - lastEnemy.width/2 - this.minXDist - enemy.width/2);
+        } else if (side == 'right') {
+            newX = Phaser.Math.Between(lastEnemy.x + lastEnemy.width/2 + enemy.width/2 + this.minXDist, rightBound - enemy.width/2);
+        }
 
         return newX;
-        */
     }
-    
 
     // -----------#### RAISED HANDS ####----------- //
     addHand() {
